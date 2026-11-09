@@ -1,3 +1,4 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,7 +10,9 @@ export default defineConfig({
     {
       name: 'github-pages-public-assets',
       transformIndexHtml(html) {
-        return html.replaceAll('"/previews/', '"%BASE_URL%previews/');
+        return html
+          .replace('</nav>', '<a href="%BASE_URL%rules.html">Rules</a></nav>')
+          .replaceAll('"/previews/', '"%BASE_URL%previews/');
       },
       transform(code, id) {
         if (id.endsWith('/src/main.js')) {
@@ -22,4 +25,12 @@ export default defineConfig({
       },
     },
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        rules: resolve(import.meta.dirname, 'rules.html'),
+      },
+    },
+  },
 });
