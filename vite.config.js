@@ -12,6 +12,11 @@ export default defineConfig({
       transformIndexHtml(html) {
         return html
           .replace('</nav>', '<a href="%BASE_URL%rules.html">Rules</a></nav>')
+          .replace(
+            '<a class="primary-button" href="#world">',
+            '<a class="primary-button rules-button" href="%BASE_URL%rules.html">Read the rules</a>\n            <a class="primary-button" href="#world">',
+          )
+          .replace('</head>', '<style>.hero-copy .rules-button{display:flex;width:max-content;margin-bottom:12px}</style>\n  </head>')
           .replaceAll('"/previews/', '"%BASE_URL%previews/');
       },
       transform(code, id) {
