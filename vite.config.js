@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   // GitHub Pages serves this project under its repository name.
-  base: '/vibecoded-fismp-website/',
+  base: '/fismp-website/',
   plugins: [
     tailwindcss(),
     {
