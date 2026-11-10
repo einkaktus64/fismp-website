@@ -39,6 +39,7 @@ document.querySelectorAll('.copy-server-ip').forEach((button) => {
 </script>`;
 
 export default defineConfig({
+  // Project Pages deployment URL: https://einkaktus64.github.io/fismp-website/
   base: '/fismp-website/',
   plugins: [
     tailwindcss(),
