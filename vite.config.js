@@ -48,11 +48,6 @@ export default defineConfig({
       name: 'github-pages-public-assets-and-server-addresses',
       transformIndexHtml(html) {
         return html
-          .replace('</nav>', `<a href="${base}rules.html">Rules</a></nav>`)
-          .replace(
-            '<a class="primary-button" href="#world">',
-            `<a class="primary-button rules-button" href="${base}rules.html">Read the rules</a>\n            <a class="primary-button" href="#world">`,
-          )
           .replace(
             '<div class="hero-server"><span>JAVA + BEDROCK</span><b>·</b><span>FISMP.RUN.PLACE</span></div>',
             `<div class="hero-server"><span>JAVA ${javaAddress}</span><b>·</b><span>BEDROCK ${bedrockAddress}</span></div>${serverAddressMarkup}`,
