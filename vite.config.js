@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
+const base = '/fismp-website/';
 const javaAddress = 'fismp.run.place';
 const bedrockAddress = 'shrimp-config.tun.ply.gg:19132';
 
@@ -40,17 +41,17 @@ document.querySelectorAll('.copy-server-ip').forEach((button) => {
 
 export default defineConfig({
   // Project Pages deployment URL: https://einkaktus64.github.io/fismp-website/
-  base: '/fismp-website/',
+  base,
   plugins: [
     tailwindcss(),
     {
       name: 'github-pages-public-assets-and-server-addresses',
       transformIndexHtml(html) {
         return html
-          .replace('</nav>', '<a href="%BASE_URL%rules.html">Rules</a></nav>')
+          .replace('</nav>', `<a href="${base}rules.html">Rules</a></nav>`)
           .replace(
             '<a class="primary-button" href="#world">',
-            '<a class="primary-button rules-button" href="%BASE_URL%rules.html">Read the rules</a>\n            <a class="primary-button" href="#world">',
+            `<a class="primary-button rules-button" href="${base}rules.html">Read the rules</a>\n            <a class="primary-button" href="#world">`,
           )
           .replace(
             '<div class="hero-server"><span>JAVA + BEDROCK</span><b>·</b><span>FISMP.RUN.PLACE</span></div>',
@@ -60,7 +61,7 @@ export default defineConfig({
             '<div class="server-address"><span class="status-dot"></span><span id="server-ip">fismp.run.place</span><span class="edition-label">JAVA + BEDROCK</span></div>',
             serverAddressMarkup,
           )
-          .replaceAll('"/previews/', '"%BASE_URL%previews/')
+          .replaceAll('"/previews/', `"${base}previews/`)
           .replace('</head>', `<style>
             .hero-copy .rules-button{display:flex;width:max-content;margin-bottom:12px}
             .server-address-list{display:grid;gap:8px;margin-top:12px;width:min(100%,440px);position:relative;z-index:3}
