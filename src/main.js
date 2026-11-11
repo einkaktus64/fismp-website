@@ -182,7 +182,7 @@ function parseNbt(buffer) {
 }
 
 async function loadSchematic() {
-  const response = await fetch('/guardian-reimagined-by-lolochee.schem');
+  const response = await fetch(`${import.meta.env.BASE_URL}guardian-reimagined-by-lolochee.schem`);
   if (!response.ok) throw new Error('Could not fetch the schematic file.');
   const compressed = await response.arrayBuffer();
   if (!('DecompressionStream' in window)) throw new Error('This browser cannot open compressed schematic files.');
@@ -214,18 +214,20 @@ async function loadSchematic() {
 
   const origin = new THREE.Object3D();
   const cube = new THREE.BoxGeometry(1, 1, 1);
+  let renderedBlocks = 0;
   for (let id = 1; id < palette.length; id++) {
     const points = positionsById[id];
     if (!points.length) continue;
     const name = palette[id];
     const blockId = name.slice(name.indexOf(':') + 1).split('[')[0];
+    let geometry = cube;
     let yScale = 1;
     let yOffset = 0;
     if (blockId.endsWith('_slab') && name.includes('type=bottom')) { yScale = 0.5; yOffset = -0.25; }
     if (blockId.endsWith('_slab') && name.includes('type=top')) { yScale = 0.5; yOffset = 0.25; }
     if (blockId === 'sea_pickle') { yScale = 0.28; yOffset = -0.36; }
     if (blockId === 'jack_o_lantern') { yScale = 0.92; }
-    const mesh = new THREE.InstancedMesh(cube, makeMaterial(name, id), points.length);
+    const mesh = new THREE.InstancedMesh(geometry, makeMaterial(name, id), points.length);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     points.forEach(([x, y, z], instance) => {
@@ -238,6 +240,7 @@ async function loadSchematic() {
     });
     mesh.instanceMatrix.needsUpdate = true;
     buildRoot.add(mesh);
+    renderedBlocks += points.length;
   }
   buildRoot.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(buildRoot);
@@ -256,7 +259,7 @@ async function loadSchematic() {
   controls.maxDistance = sphere.radius * 4.8;
   controls.update();
   controls.saveState();
-  status.textContent = `${width} × ${height} × ${length} BLOCKS`;
+  status.textContent = `${width} × ${height} × ${length} BLOCKS  ·  ${renderedBlocks.toLocaleString()} PLACED`;
 }
 
 function resize() {
