@@ -214,20 +214,18 @@ async function loadSchematic() {
 
   const origin = new THREE.Object3D();
   const cube = new THREE.BoxGeometry(1, 1, 1);
-  let renderedBlocks = 0;
   for (let id = 1; id < palette.length; id++) {
     const points = positionsById[id];
     if (!points.length) continue;
     const name = palette[id];
     const blockId = name.slice(name.indexOf(':') + 1).split('[')[0];
-    let geometry = cube;
     let yScale = 1;
     let yOffset = 0;
     if (blockId.endsWith('_slab') && name.includes('type=bottom')) { yScale = 0.5; yOffset = -0.25; }
     if (blockId.endsWith('_slab') && name.includes('type=top')) { yScale = 0.5; yOffset = 0.25; }
     if (blockId === 'sea_pickle') { yScale = 0.28; yOffset = -0.36; }
     if (blockId === 'jack_o_lantern') { yScale = 0.92; }
-    const mesh = new THREE.InstancedMesh(geometry, makeMaterial(name, id), points.length);
+    const mesh = new THREE.InstancedMesh(cube, makeMaterial(name, id), points.length);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     points.forEach(([x, y, z], instance) => {
@@ -240,7 +238,6 @@ async function loadSchematic() {
     });
     mesh.instanceMatrix.needsUpdate = true;
     buildRoot.add(mesh);
-    renderedBlocks += points.length;
   }
   buildRoot.updateMatrixWorld(true);
   const bounds = new THREE.Box3().setFromObject(buildRoot);
@@ -259,7 +256,7 @@ async function loadSchematic() {
   controls.maxDistance = sphere.radius * 4.8;
   controls.update();
   controls.saveState();
-  status.textContent = `${width} × ${height} × ${length} BLOCKS  ·  ${renderedBlocks.toLocaleString()} PLACED`;
+  status.textContent = `${width} × ${height} × ${length} BLOCKS`;
 }
 
 function resize() {
@@ -288,7 +285,6 @@ function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
-  // Lantern glow gently breathes in the distant water.
   const time = clock.getElapsedTime();
   keyLight.intensity = 3.55 + Math.sin(time * 0.45) * 0.08;
 }
@@ -327,7 +323,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
-// Keep the scenic schematic renders gently embedded in the page as it scrolls.
 const parallaxArtwork = [...document.querySelectorAll('.parallax-art')];
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 let parallaxFrame = 0;
